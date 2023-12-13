@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atinuke.my_notebook.AppNavigation
+import com.atinuke.my_notebook.Routes
 import com.atinuke.my_notebook.components.NoteItem
 
 
@@ -62,7 +63,7 @@ fun NoteListScreen(navController : NavController){
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController. navigate("add-note")}) {
+            FloatingActionButton(onClick = { navController. navigate(Routes.addNoteRoute)}) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add note" )
             }
         }
