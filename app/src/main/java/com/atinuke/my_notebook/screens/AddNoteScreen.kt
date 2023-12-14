@@ -22,22 +22,25 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.atinuke.my_notebook.Routes
-import com.atinuke.my_notebook.components.NoteItem
+import com.atinuke.my_notebook.view_model.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteScreen(navController : NavController){
-    var title by remember { mutableStateOf("")}
-    var newNote by remember { mutableStateOf("")}
+    var noteViewModel: NoteViewModel = viewModel()
+
+    var title by rememberSaveable { mutableStateOf("")}
+    var newNote by rememberSaveable { mutableStateOf("")}
+
 
    Scaffold (
         topBar = {
@@ -74,7 +77,7 @@ fun AddNoteScreen(navController : NavController){
                        .padding(horizontal = 10.dp)
                        .padding(top = 10.dp)
                        .fillMaxWidth()
-                       .height(50.dp),
+                       .height(60.dp),
                    maxLines = 1, // Adjust as needed
                )
                Spacer(modifier = Modifier.height(0.dp))

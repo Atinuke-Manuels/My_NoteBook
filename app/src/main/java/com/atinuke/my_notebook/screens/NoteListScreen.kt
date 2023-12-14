@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
@@ -55,11 +56,15 @@ fun NoteListScreen(navController : NavController){
             )
         },
         content = { paddingValues ->
-            Column (modifier = Modifier.padding(paddingValues)){
-                NoteItem()
-                NoteItem()
-                NoteItem()
-                NoteItem()
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            ) {
+                items(10) { index ->
+                    // Replace this with your NoteItem content
+                    NoteItem()
+                }
             }
         },
         floatingActionButton = {
