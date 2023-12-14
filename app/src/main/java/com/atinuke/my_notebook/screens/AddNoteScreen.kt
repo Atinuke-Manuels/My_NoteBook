@@ -53,7 +53,11 @@ fun AddNoteScreen(navController : NavController){
                     navigationIconContentColor = Color.White
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate(Routes.noteListRoute) }) {
+                    IconButton(onClick = {
+                        navController.navigate(Routes.noteListRoute)
+                        noteViewModel.saveNote(title, newNote)
+//                        navController.popBackStack()
+                    }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
                     }
                 },
