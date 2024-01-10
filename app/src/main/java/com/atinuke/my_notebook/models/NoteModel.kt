@@ -7,7 +7,8 @@ import java.util.Date
 @Entity(tableName = "notes")
 data class NoteModel(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val title: String,
     val newNote: String,
+    val noteTime: Long,
 )

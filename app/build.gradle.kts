@@ -70,6 +70,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
 
     val room_version = "2.6.1"
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
