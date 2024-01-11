@@ -11,4 +11,5 @@ data class NoteModel(
     val title: String,
     val newNote: String,
     val noteTime: Long,
+    val noteDate: Long,
 )

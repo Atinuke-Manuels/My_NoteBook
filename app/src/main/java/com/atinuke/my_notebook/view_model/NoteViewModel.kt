@@ -10,15 +10,29 @@ import com.atinuke.my_notebook.models.NoteModel
 import com.atinuke.my_notebook.room.DatabaseConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicationn) {
     private val db = DatabaseConfig.getInstance(applicationn)
 
+    private fun getStartOfDay(currentTimeMillis: Long): Long {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = currentTimeMillis
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        return calendar.timeInMillis
+    }
+
     fun saveNote(title: String, newNote: String) {
+        val currentTimeMillis = System.currentTimeMillis()
         val note = NoteModel(
             title = title,
             newNote = newNote,
-            noteTime = System.currentTimeMillis()
+            noteTime = System.currentTimeMillis(),
+            noteDate = getStartOfDay(currentTimeMillis)
         )
 
 
@@ -37,4 +51,10 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
             db.noteDao().deleteNoteById(notes.id) // Assuming your NoteModel has an 'id' property
         }
     }
+
+    fun getNoteById(noteId: Int): LiveData<NoteModel?> {
+        return db.noteDao().fetchNoteById(noteId)
+    }
+
+
 }

@@ -12,9 +12,15 @@ interface NoteDao {
     @Insert
     suspend fun saveNote(note : NoteModel)
 
-    @Query("Select * from notes ")
+//    query to display all notes on the screen
+    @Query("Select * from notes order by id DESC")
     fun fetchNotes(): LiveData<List<NoteModel>>
 
+//    query to delete a note by id
     @Query("DELETE FROM notes WHERE id = :noteId")
     suspend fun deleteNoteById(noteId: Long)
+
+//    query to edit a note by id
+    @Query("SELECT * FROM notes WHERE id = :noteId")
+    fun fetchNoteById(noteId: Int): LiveData<NoteModel?>
 }

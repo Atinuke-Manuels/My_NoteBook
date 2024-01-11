@@ -54,15 +54,20 @@ fun AddNoteScreen(navController : NavController){
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate(Routes.noteListRoute)
-                        noteViewModel.saveNote(title, newNote)
+//                        navController.navigate(Routes.noteListRoute)
+//                        noteViewModel.saveNote(title, newNote)
 //                        navController.popBackStack()
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
                     }
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        // Save the note when the "Add Note" icon is clicked
+                        noteViewModel.saveNote(title, newNote)
+                        // navigate to the homescreen
+                        navController.navigate(Routes.noteListRoute)
+                    }) {
                         Icon(imageVector = Icons.Default.Add ,contentDescription = "Add Note " )
                     }
                     IconButton(onClick = {}) {
