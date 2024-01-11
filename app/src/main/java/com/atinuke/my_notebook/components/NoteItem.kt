@@ -2,14 +2,26 @@ package com.atinuke.my_notebook.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,29 +51,33 @@ fun NoteItem(notes: NoteModel,
              onDeleteClick: () -> Unit,
              navController: NavController){
 
-    var isDropdownExpanded by rememberSaveable { mutableStateOf(false) }
+//    var isDropdownExpanded by rememberSaveable { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     // Function to handle dropdown item click
-    val onDropdownItemClick: (String) -> Unit = { action ->
-        when (action) {
-            "Edit" -> onEditClick()
-            "Delete" -> onDeleteClick()
-        }
-        isDropdownExpanded = false
-    }
+//    val onDropdownItemClick: (String) -> Unit = { action ->
+//        when (action) {
+//            "Edit" -> onEditClick()
+//            "Delete" -> onDeleteClick()
+//        }
+//        isDropdownExpanded = false
+//    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
 //            .clickable { onClick() }
-            .clickable {
-                // Toggle the dropdown menu
-                isDropdownExpanded = !isDropdownExpanded
-
-                // If the dropdown menu is not expanded, navigate to noteDetailsRoute
-                if (!isDropdownExpanded) {
-                    navController.navigate(Routes.noteDetailsRoute)
-                }
+//            .clickable {
+//                // Toggle the dropdown menu
+//                isDropdownExpanded = !isDropdownExpanded
+//
+//                // If the dropdown menu is not expanded, navigate to noteDetailsRoute
+//                if (!isDropdownExpanded) {
+//                    navController.navigate(Routes.noteDetailsRoute)
+//                }
+//            }
+            .clickable{
+                showDialog = true
             }
     )
 
@@ -105,16 +121,71 @@ fun NoteItem(notes: NoteModel,
             )
         }
     }
-    DropdownMenu(expanded = isDropdownExpanded,
-        onDismissRequest = { /*TODO*/ },
-        modifier = Modifier
-            .padding(8.dp)) {
-    DropdownMenuItem(
-        text = {Text(text ="Edit")},
-        onClick  = { onEditClick() })
-        DropdownMenuItem(
-            text = {Text(text ="Delete")},
-            onClick  = { onDeleteClick() })
+//    DropdownMenu(expanded = isDropdownExpanded,
+//        onDismissRequest = { /*TODO*/ },
+//        modifier = Modifier
+//            .padding(8.dp)) {
+//    DropdownMenuItem(
+//        text = {Text(text ="Edit")},
+//        onClick  = { onEditClick() })
+//        DropdownMenuItem(
+//            text = {Text(text ="Delete")},
+//            onClick  = { onDeleteClick() })
+//    }
+//}
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+            },
+            title = { Text(text = "Choose an Option") },
+            text = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(
+                        onClick = {
+                            onEditClick()
+                            showDialog = false
+                        },
+                        modifier = Modifier
+                            .background(Color.Green, shape = MaterialTheme.shapes.small)
+//                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "Edit", color = Color.White)
+                    }
+                    TextButton(
+                        onClick = {
+                            onDeleteClick()
+                            showDialog = false
+                        },
+                        modifier = Modifier
+                            .background(Color.Red, shape = MaterialTheme.shapes.small)
+//                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "Delete", color = Color.White)
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {}
+        )
     }
 }
 
