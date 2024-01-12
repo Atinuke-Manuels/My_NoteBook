@@ -54,28 +54,11 @@ fun NoteItem(notes: NoteModel,
 //    var isDropdownExpanded by rememberSaveable { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
-    // Function to handle dropdown item click
-//    val onDropdownItemClick: (String) -> Unit = { action ->
-//        when (action) {
-//            "Edit" -> onEditClick()
-//            "Delete" -> onDeleteClick()
-//        }
-//        isDropdownExpanded = false
-//    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
 //            .clickable { onClick() }
-//            .clickable {
-//                // Toggle the dropdown menu
-//                isDropdownExpanded = !isDropdownExpanded
-//
-//                // If the dropdown menu is not expanded, navigate to noteDetailsRoute
-//                if (!isDropdownExpanded) {
-//                    navController.navigate(Routes.noteDetailsRoute)
-//                }
-//            }
             .clickable{
                 showDialog = true
             }
@@ -121,18 +104,6 @@ fun NoteItem(notes: NoteModel,
             )
         }
     }
-//    DropdownMenu(expanded = isDropdownExpanded,
-//        onDismissRequest = { /*TODO*/ },
-//        modifier = Modifier
-//            .padding(8.dp)) {
-//    DropdownMenuItem(
-//        text = {Text(text ="Edit")},
-//        onClick  = { onEditClick() })
-//        DropdownMenuItem(
-//            text = {Text(text ="Delete")},
-//            onClick  = { onDeleteClick() })
-//    }
-//}
 
     if (showDialog) {
         AlertDialog(

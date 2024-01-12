@@ -4,16 +4,22 @@ import android.app.Application
 import android.provider.ContactsContract
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atinuke.my_notebook.models.NoteModel
 import com.atinuke.my_notebook.room.DatabaseConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicationn) {
     private val db = DatabaseConfig.getInstance(applicationn)
+
+//    private val _filteredNotes = MediatorLiveData<List<NoteModel>>()
+//    var filteredNotes: LiveData<List<NoteModel>> = _filteredNotes
 
     private fun getStartOfDay(currentTimeMillis: Long): Long {
         val calendar = Calendar.getInstance().apply {
@@ -56,5 +62,18 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         return db.noteDao().fetchNoteById(noteId)
     }
 
+//    fun searchNotes(query: String) {
+//        if (query.isNotEmpty()) {
+//            // Update the source LiveData to trigger the MediatorLiveData
+//            _filteredNotes.removeSource(db.noteDao().searchNotes("%"))
+//            _filteredNotes.addSource(db.noteDao().searchNotes("%$query%"), _filteredNotes::setValue)
+//        } else {
+//            // If the query is empty, set the value to an empty list
+//            _filteredNotes.value = emptyList()
+//        }
+//    }
 
+//    fun getFilteredNotes(): LiveData<List<NoteModel>> {
+//        return filteredNotes
+//    }
 }

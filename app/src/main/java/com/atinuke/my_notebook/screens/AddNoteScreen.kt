@@ -56,7 +56,7 @@ fun AddNoteScreen(navController : NavController){
                     IconButton(onClick = {
 //                        navController.navigate(Routes.noteListRoute)
 //                        noteViewModel.saveNote(title, newNote)
-//                        navController.popBackStack()
+                        navController.popBackStack()
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
                     }

@@ -23,4 +23,9 @@ interface NoteDao {
 //    query to edit a note by id
     @Query("SELECT * FROM notes WHERE id = :noteId")
     fun fetchNoteById(noteId: Int): LiveData<NoteModel?>
+
+////    query to delete a note by id
+//    @Query("SELECT * FROM notes WHERE title LIKE '%' || :searchQuery || '%' OR newNote LIKE '%' || :searchQuery || '%'")
+//    fun searchNotes(searchQuery: String): LiveData<List<NoteModel>>
+
 }
