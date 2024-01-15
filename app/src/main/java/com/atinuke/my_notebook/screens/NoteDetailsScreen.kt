@@ -1,91 +1,176 @@
 package com.atinuke.my_notebook.screens
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.atinuke.my_notebook.Routes
-import com.atinuke.my_notebook.components.NoteItem
-import com.atinuke.my_notebook.models.NoteModel
 import com.atinuke.my_notebook.view_model.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteDetailsScreen(navController: NavController) {
-    var myNoteViewModel: NoteViewModel = viewModel()
-    var selectedNote by remember { mutableStateOf<NoteModel?>(null) }
-
-//    val noteLiveData = myNoteViewModel.getNoteById(noteId)
-//    val note by noteLiveData.observeAsState()
+//fun NoteDetailsScreen(navController: NavController, noteId: String) {
+//    val navController = rememberNavController()
 //
-//    // Use LaunchedEffect to update the selectedNote when the note changes
-//    LaunchedEffect(note) {
-//        selectedNote = note
+//    val noteViewModel: NoteViewModel = viewModel()
+//    // Observe the selected note from the view model
+//    val selectedNote by noteViewModel.selectedNote.observeAsState()
+//    // Use rememberSaveable to persist changes across recompositions
+//    var title by rememberSaveable { mutableStateOf(selectedNote?.title ?: "") }
+//    var newNote by rememberSaveable { mutableStateOf(selectedNote?.newNote ?: "") }
+//
+//// Retrieve arguments from the navigation
+//    val noteId = navController.previousBackStackEntry?.arguments?.getLong("noteId") ?: -1L
+//    // Use LaunchedEffect to load the note details when the screen is launched
+//    LaunchedEffect(noteId) {
+//        if (noteId != -1L) {
+//            noteViewModel.getNoteById(noteId.toInt())
+//        }
 //    }
+//
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = { Text(text = "Edit Note") },
+//                colors = TopAppBarDefaults.smallTopAppBarColors(
+//                    containerColor = MaterialTheme.colorScheme.primary,
+//                    titleContentColor = Color.White,
+//                    actionIconContentColor = Color.White,
+//                    navigationIconContentColor = Color.White
+//                ),
+//                navigationIcon = {
+//                    IconButton(onClick = {
+//                        // Navigate back when the back arrow is clicked
+//                        navController.navigate(Routes.noteDetailsRoute)
+//                    }) {
+//                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
+//                    }
+//                },
+//                actions = {
+//                    // Save changes when the "Add Note" icon is clicked
+//                    IconButton(onClick = {
+//                        noteViewModel.updateNote(selectedNote?.id ?: -1, title, newNote)
+//                        // Navigate to the homescreen
+//                        navController.popBackStack()
+//                    }) {
+//                        Icon(imageVector = Icons.Default.Add, contentDescription = "Save Changes")
+//                    }
+//                }
+//            )
+//        },
+//        content = { paddingValues ->
+//            Column(modifier = Modifier.padding(paddingValues)) {
+//                OutlinedTextField(
+//                    value = title,
+//                    onValueChange = { titleInput -> title = titleInput },
+//                    label = { Text(text = "Enter Title", fontWeight = FontWeight.Black) },
+//                    modifier = Modifier
+//                        .padding(horizontal = 10.dp)
+//                        .padding(top = 10.dp)
+//                        .fillMaxWidth()
+//                        .height(60.dp),
+//                    maxLines = 1, // Adjust as needed
+//                )
+//                Spacer(modifier = Modifier.height(0.dp))
+//                TextField(
+//                    value = newNote,
+//                    onValueChange = { newNoteInput -> newNote = newNoteInput },
+//                    label = { Text(text = "Enter note here") },
+//                    modifier = Modifier
+//                        .padding(horizontal = 10.dp)
+//                        .fillMaxWidth()
+//                        .height(120.dp),
+//                    maxLines = 5,
+//                )
+//            }
+//        }
+//    )
+//}
 
-        Scaffold (
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = "Edit Note") },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = Color.White,
-                        actionIconContentColor = Color.White
-                    ),
-                    actions = {
-                        IconButton(onClick = {}) {
-                            Icon(imageVector = Icons.Default.Edit,contentDescription = "Edit for Note " )
-                        }
-                        IconButton(onClick = {}) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Note" )
-                        }
+fun NoteDetailsScreen(navController: NavController, noteId: String) {
+    val noteViewModel: NoteViewModel = viewModel()
+    val notes by noteViewModel.getNote(noteId).observeAsState()
+    var title by rememberSaveable { mutableStateOf(notes?.title?: "No note to retrieve") }
+    var newNote by rememberSaveable { mutableStateOf(notes?.newNote?: "No note to retrieve") }
+
+    LaunchedEffect(notes) {
+        title = notes?.title ?: "No note to retrieve"
+        newNote = notes?.newNote ?: "No note to retrieve"
+    }
+
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Edit Note") },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        // Navigate back when the back arrow is clicked
+                        navController.navigate(Routes.noteListRoute)
+                    }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
                     }
-                )
-            },
-            content = { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                ) {
-                    selectedNote?.let {
-                        Text(text = it.noteDate.toString())
-                        Text(text = it.title)
-                        Text(text = it.newNote)
-                        Text(text = it.noteTime.toString()) // Modify this to display the formatted date and time
+                },
+                actions = {
+                    // Save changes when the "Add Note" icon is clicked
+                    IconButton(onClick = {
+                        noteViewModel.saveNote(title, newNote)
+                        // Navigate to the homescreen
+                        navController.popBackStack()
+                    }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Save Changes")
                     }
                 }
+            )
+        },
+        content = { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { titleInput -> title = titleInput },
+                    label = { Text(text = "Enter Title", fontWeight = FontWeight.Black) },
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(top = 10.dp)
+                        .fillMaxWidth()
+                        .height(80.dp),
+                    maxLines = 1, // Adjust as needed
+                )
+                Spacer(modifier = Modifier.height(0.dp))
+                TextField(
+                    value = newNote,
+                    onValueChange = { newNoteInput -> newNote = newNoteInput },
+                    label = { Text(text = "Enter note here") },
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    maxLines = 5,
+                )
             }
-        )
-
-    }
+        }
+    )
+}
 

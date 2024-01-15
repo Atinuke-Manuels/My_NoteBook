@@ -8,8 +8,8 @@ import java.util.Date
 data class NoteModel(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val title: String,
-    val newNote: String,
+    var title: String,
+    var newNote: String,
     val noteTime: Long,
     val noteDate: Long,
 )

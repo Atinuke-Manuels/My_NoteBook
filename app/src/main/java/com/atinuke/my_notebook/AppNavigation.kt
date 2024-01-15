@@ -30,13 +30,12 @@ fun AppNavigation(){
         composable(Routes.addNoteRoute){
             AddNoteScreen(navController)
         }
-//        composable(Routes.noteDetailsRoute + "/{noteId}") { backStackEntry ->
-//            val arguments = requireNotNull(backStackEntry.arguments)
-//            val noteId = arguments.getInt("noteId")
-//            NoteDetailsScreen(navController, noteId)
-//        }
-        composable(Routes.noteDetailsRoute){
-            NoteDetailsScreen(navController)
+
+        composable("note-details/{noteId}"){
+            NoteDetailsScreen(
+                navController,
+                noteId = it.arguments!!.getString("noteId").toString()
+            )
         }
     }
 }
@@ -44,5 +43,9 @@ fun AppNavigation(){
 object Routes {
     var noteListRoute = "note-list"
     var addNoteRoute = "add-note"
-    var noteDetailsRoute = "note-details"
+//    var noteDetailsRoute = "note-details"
+
+    fun NoteDetails(noteId: String): String{
+        return "note-details/$noteId"
+    }
 }

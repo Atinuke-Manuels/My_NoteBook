@@ -2,12 +2,16 @@ package com.atinuke.my_notebook.view_model
 
 import android.app.Application
 import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Note
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.atinuke.my_notebook.models.NoteModel
 import com.atinuke.my_notebook.room.DatabaseConfig
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +21,6 @@ import java.util.Calendar
 
 class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicationn) {
     private val db = DatabaseConfig.getInstance(applicationn)
-
-//    private val _filteredNotes = MediatorLiveData<List<NoteModel>>()
-//    var filteredNotes: LiveData<List<NoteModel>> = _filteredNotes
 
     private fun getStartOfDay(currentTimeMillis: Long): Long {
         val calendar = Calendar.getInstance().apply {
@@ -33,6 +34,7 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
     }
 
     fun saveNote(title: String, newNote: String) {
+        if (title.isEmpty() && newNote.isEmpty()) return  // to ensure an empty note is not added
         val currentTimeMillis = System.currentTimeMillis()
         val note = NoteModel(
             title = title,
@@ -48,7 +50,7 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun getAllNotes(): LiveData<List<NoteModel>>{
+    fun getAllNotes(): LiveData<List<NoteModel>> {
         return db.noteDao().fetchNotes()
     }
 
@@ -58,22 +60,36 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun getNoteById(noteId: Int): LiveData<NoteModel?> {
-        return db.noteDao().fetchNoteById(noteId)
-    }
-
-//    fun searchNotes(query: String) {
-//        if (query.isNotEmpty()) {
-//            // Update the source LiveData to trigger the MediatorLiveData
-//            _filteredNotes.removeSource(db.noteDao().searchNotes("%"))
-//            _filteredNotes.addSource(db.noteDao().searchNotes("%$query%"), _filteredNotes::setValue)
-//        } else {
-//            // If the query is empty, set the value to an empty list
-//            _filteredNotes.value = emptyList()
+//    fun getNoteById(noteId: Int) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val note = db.noteDao().fetchNoteById(noteId).value
+//            _selectedNote.postValue(note)
 //        }
 //    }
 
-//    fun getFilteredNotes(): LiveData<List<NoteModel>> {
-//        return filteredNotes
+    fun getNote(noteId: String): LiveData<NoteModel?> {
+        return db.noteDao().fetchNotes(noteId)
+    }
+
+//    fun updateNote(noteId: String, title: String, newNote: String) {
+//        if (title.isEmpty() && newNote.isEmpty()) return  // Ensure an empty note is not updated
+//
+//        viewModelScope.launch(Dispatchers.IO) {
+//            // Fetch the existing note from the database
+//            var existingNote = db.noteDao().fetchNotes(noteId)
+//
+//
+//            // Check if the note exists
+//            existingNote?.let { it ->
+//                // Update the properties of the existing note
+//                it.title = title ?: ""
+//                it.newNote = newNote ?: ""
+//                it.noteTime = System.currentTimeMillis()
+//
+//                // Perform the database operation (update) using appDatabase
+//                db.noteDao().updateNote(it)
+//            }
+//        }
 //    }
 }
+

@@ -2,6 +2,7 @@ package com.atinuke.my_notebook.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.atinuke.my_notebook.models.NoteModel
@@ -22,10 +23,13 @@ interface NoteDao {
 
 //    query to edit a note by id
     @Query("SELECT * FROM notes WHERE id = :noteId")
-    fun fetchNoteById(noteId: Int): LiveData<NoteModel?>
+    fun fetchNotes(noteId: String): LiveData<NoteModel?>
 
-////    query to delete a note by id
-//    @Query("SELECT * FROM notes WHERE title LIKE '%' || :searchQuery || '%' OR newNote LIKE '%' || :searchQuery || '%'")
-//    fun searchNotes(searchQuery: String): LiveData<List<NoteModel>>
 
+    // Query to update a note by id
+    @Query("UPDATE notes SET title = :newTitle, newNote = :newNote WHERE id = :noteId")
+    suspend fun updateNote(noteId: String, newTitle: String, newNote: String)
+
+//    @Delete
+//    fun deleteNote()
 }

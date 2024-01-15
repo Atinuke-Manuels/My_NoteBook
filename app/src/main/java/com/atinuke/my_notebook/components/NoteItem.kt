@@ -51,7 +51,6 @@ fun NoteItem(notes: NoteModel,
              onDeleteClick: () -> Unit,
              navController: NavController){
 
-//    var isDropdownExpanded by rememberSaveable { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
     Card(
@@ -86,9 +85,6 @@ fun NoteItem(notes: NoteModel,
             )
             Text(text = notes.title, fontWeight = FontWeight.Black)
             Text(text = notes.newNote)
-
-//            val currentTime = LocalDateTime.now()
-//            val formattedTime = currentTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
 
             val timestamp = Instant.ofEpochMilli(notes.noteTime)
             val noteTime = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault())
