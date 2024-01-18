@@ -12,5 +12,5 @@ data class NoteModel(
     var newNote: String,
     var noteTime: Long,
     val noteDate: Long,
-//    var editTag: String?
+    var isEdited: Boolean = false
 )

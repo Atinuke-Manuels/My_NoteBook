@@ -1,13 +1,17 @@
 package com.atinuke.my_notebook.components
 
+import android.content.res.Resources
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -31,10 +35,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.atinuke.my_notebook.R
 import com.atinuke.my_notebook.Routes
 import com.atinuke.my_notebook.models.NoteModel
 import java.time.Instant
@@ -59,6 +66,8 @@ fun NoteItem(notes: NoteModel,
     val noteTime = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault())
 
     val formattedTime = noteTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+
+    val editedText = if (notes.isEdited) "Edited" else ""
     // to display date and time together
 //            val formattedTime = noteTime.format(DateTimeFormatter.ofPattern("EEEE MMM. d, yyyy HH:mm:ss"));
 
@@ -66,40 +75,63 @@ fun NoteItem(notes: NoteModel,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable{
+            .clickable {
                 showDialog = true
             }
+            // To give the cards alternate colors
+
     )
     {
 
-        Column (
+        Box (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(
-                text = formattedDate,
-                color = Color.Blue,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(bottom = 4.dp)
-            )
-            Text(text = notes.title, fontWeight = FontWeight.Black)
-            Text(text = notes.newNote)
+                .fillMaxSize()
+                .background(
+                    color = if (notes.id.toInt() % 2 == 0) Color.LightGray else Color.Gray,
+                    shape = RectangleShape
+                )// Set background color
 
-            // Conditionally display "Edited" text
-//            if (notes.editTag == "edited") {
-//                Text(text = "Edited", fontWeight = FontWeight.Thin, color = Color.Gray)
-//            }
-
-            Text(
-                text = formattedTime,
-                color = Color.Red,
-                fontSize = 12.sp,
+        ){
+            Column(
                 modifier = Modifier
-                    .align(Alignment.End)
-            )
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, end = 8.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically, // Specify the vertical alignment here
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = formattedDate,
+                        color = Color.Blue,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = formattedTime,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+
+                    )
+                }
+                Text(text = notes.title, fontWeight = FontWeight.Black)
+                Text(text = notes.newNote)
+
+                Text(
+                    text = editedText,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.DarkGray,
+                    fontSize = 8.sp,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(top = 8.dp)
+                )
+            }
         }
     }
 

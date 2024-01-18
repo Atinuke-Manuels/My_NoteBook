@@ -30,12 +30,10 @@ fun NoteDetailsScreen(navController: NavController, noteId: String) {
     val notes by noteViewModel.getNote(noteId).observeAsState()
     var title by rememberSaveable { mutableStateOf(notes?.title ?: "No note to retrieve") }
     var newNote by rememberSaveable { mutableStateOf(notes?.newNote ?: "No note to retrieve") }
-//    var editTag by rememberSaveable  { mutableStateOf(notes?.editTag ?: "") }
 
     LaunchedEffect(notes) {
         title = notes?.title ?: "No note to retrieve"
         newNote = notes?.newNote ?: "No note to retrieve"
-//        editTag = notes?.editTag ?: ""
     }
 
     Scaffold(

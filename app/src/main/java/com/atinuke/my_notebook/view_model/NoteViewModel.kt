@@ -33,10 +33,7 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         return calendar.timeInMillis
     }
 
-    fun saveNote(title: String,
-                 newNote: String,
-//                 editTag: String
-    ) {
+    fun saveNote(title: String, newNote: String,) {
         if (title.isEmpty() && newNote.isEmpty()) return  // to ensure an empty note is not added
         val currentTimeMillis = System.currentTimeMillis()
         val note = NoteModel(
@@ -70,7 +67,7 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
 
     fun updateNote(note: NoteModel){
             viewModelScope.launch {
-                db.noteDao().updateNote(note)
+                db.noteDao().updateNote(note.copy(isEdited = true))
             }
     }
 
