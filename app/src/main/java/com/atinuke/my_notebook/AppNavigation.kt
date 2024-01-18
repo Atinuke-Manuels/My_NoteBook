@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.atinuke.my_notebook.models.NoteModel
 import com.atinuke.my_notebook.screens.AddNoteScreen
+import com.atinuke.my_notebook.screens.LoginScreen
 import com.atinuke.my_notebook.screens.NoteDetailsScreen
 import com.atinuke.my_notebook.screens.NoteListScreen
 
@@ -22,8 +23,11 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = Routes.noteListRoute
+        startDestination = Routes.loginRoute
     ){
+        composable(Routes.loginRoute){
+            LoginScreen(navController)
+        }
         composable(Routes.noteListRoute){
             NoteListScreen(navController)
         }
@@ -48,4 +52,6 @@ object Routes {
     fun NoteDetails(noteId: String): String{
         return "note-details/$noteId"
     }
+
+    var loginRoute = "login"
 }
