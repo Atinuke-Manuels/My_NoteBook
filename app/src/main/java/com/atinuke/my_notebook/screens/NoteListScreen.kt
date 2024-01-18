@@ -2,6 +2,7 @@ package com.atinuke.my_notebook.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,7 +70,6 @@ fun NoteListScreen(navController: NavController) {
     var searchText by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
 
-    val density = LocalDensity.current
 
     Scaffold(
         topBar = {
@@ -118,7 +119,6 @@ fun NoteListScreen(navController: NavController) {
                                 .width(136.dp)  // Adjust the width as needed
                         )
                     }
-
 
                     IconButton(onClick = {}) {
                         Icon(
@@ -189,9 +189,10 @@ fun NoteListScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Routes.addNoteRoute) }
+                onClick = { navController.navigate(Routes.addNoteRoute) },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add note",
+                    )
             }
         }
     )

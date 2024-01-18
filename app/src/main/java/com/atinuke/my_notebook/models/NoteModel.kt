@@ -10,6 +10,7 @@ data class NoteModel(
     val id: Long = 0,
     var title: String,
     var newNote: String,
-    val noteTime: Long,
+    var noteTime: Long,
     val noteDate: Long,
+//    var editTag: String?
 )

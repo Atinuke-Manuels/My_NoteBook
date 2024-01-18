@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ fun AddNoteScreen(navController : NavController){
 
     var title by rememberSaveable { mutableStateOf("")}
     var newNote by rememberSaveable { mutableStateOf("")}
+    var editTag by remember { mutableStateOf("") }
 
 
    Scaffold (
@@ -54,8 +56,6 @@ fun AddNoteScreen(navController : NavController){
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-//                        navController.navigate(Routes.noteListRoute)
-//                        noteViewModel.saveNote(title, newNote)
                         navController.popBackStack()
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Arrow")
@@ -64,7 +64,10 @@ fun AddNoteScreen(navController : NavController){
                 actions = {
                     IconButton(onClick = {
                         // Save the note when the "Add Note" icon is clicked
-                        noteViewModel.saveNote(title, newNote)
+                        noteViewModel.saveNote(title,
+                            newNote,
+//                            editTag
+                        )
                         // navigate to the homescreen
                         navController.navigate(Routes.noteListRoute)
                     }) {

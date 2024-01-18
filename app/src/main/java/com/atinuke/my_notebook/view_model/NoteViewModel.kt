@@ -33,15 +33,19 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         return calendar.timeInMillis
     }
 
-    fun saveNote(title: String, newNote: String) {
+    fun saveNote(title: String,
+                 newNote: String,
+//                 editTag: String
+    ) {
         if (title.isEmpty() && newNote.isEmpty()) return  // to ensure an empty note is not added
         val currentTimeMillis = System.currentTimeMillis()
         val note = NoteModel(
             title = title,
             newNote = newNote,
             noteTime = System.currentTimeMillis(),
-            noteDate = getStartOfDay(currentTimeMillis)
-        )
+            noteDate = getStartOfDay(currentTimeMillis),
+//            editTag = editTag
+            )
 
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,36 +64,15 @@ class NoteViewModel(val applicationn: Application) : AndroidViewModel(applicatio
         }
     }
 
-//    fun getNoteById(noteId: Int) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val note = db.noteDao().fetchNoteById(noteId).value
-//            _selectedNote.postValue(note)
-//        }
-//    }
-
     fun getNote(noteId: String): LiveData<NoteModel?> {
         return db.noteDao().fetchNotes(noteId)
     }
 
-//    fun updateNote(noteId: String, title: String, newNote: String) {
-//        if (title.isEmpty() && newNote.isEmpty()) return  // Ensure an empty note is not updated
-//
-//        viewModelScope.launch(Dispatchers.IO) {
-//            // Fetch the existing note from the database
-//            var existingNote = db.noteDao().fetchNotes(noteId)
-//
-//
-//            // Check if the note exists
-//            existingNote?.let { it ->
-//                // Update the properties of the existing note
-//                it.title = title ?: ""
-//                it.newNote = newNote ?: ""
-//                it.noteTime = System.currentTimeMillis()
-//
-//                // Perform the database operation (update) using appDatabase
-//                db.noteDao().updateNote(it)
-//            }
-//        }
-//    }
+    fun updateNote(note: NoteModel){
+            viewModelScope.launch {
+                db.noteDao().updateNote(note)
+            }
+    }
+
 }
 

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.atinuke.my_notebook.models.NoteModel
 
 //Dao is data access object
@@ -27,8 +28,10 @@ interface NoteDao {
 
 
     // Query to update a note by id
-    @Query("UPDATE notes SET title = :newTitle, newNote = :newNote WHERE id = :noteId")
-    suspend fun updateNote(noteId: String, newTitle: String, newNote: String)
+//    @Query("UPDATE notes SET title = :newTitle, newNote = :newNote WHERE id = :noteId")
+//    suspend fun updateNote(noteId: String, newTitle: String, newNote: String)
+    @Update
+    suspend fun updateNote(note: NoteModel)
 
 //    @Delete
 //    fun deleteNote()

@@ -45,24 +45,31 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NoteItem(notes: NoteModel,
-//             onClick: () -> Unit,
              selectedNote: NoteModel?,
              onEditClick: () -> Unit,
              onDeleteClick: () -> Unit,
              navController: NavController){
 
     var showDialog by remember { mutableStateOf(false) }
+    val datestamp = Instant.ofEpochMilli(notes.noteDate)
+    val noteDate = LocalDateTime.ofInstant(datestamp, ZoneId.systemDefault())
+    val formattedDate = noteDate.format(DateTimeFormatter.ofPattern("EEEE MMM. d, yyyy"))
+
+    val timestamp = Instant.ofEpochMilli(notes.noteTime)
+    val noteTime = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault())
+
+    val formattedTime = noteTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+    // to display date and time together
+//            val formattedTime = noteTime.format(DateTimeFormatter.ofPattern("EEEE MMM. d, yyyy HH:mm:ss"));
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-//            .clickable { onClick() }
             .clickable{
                 showDialog = true
             }
     )
-
     {
 
         Column (
@@ -70,11 +77,6 @@ fun NoteItem(notes: NoteModel,
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            val datestamp = Instant.ofEpochMilli(notes.noteDate)
-            val noteDate = LocalDateTime.ofInstant(datestamp, ZoneId.systemDefault())
-            val formattedDate = noteDate.format(DateTimeFormatter.ofPattern("EEEE MMM. d, yyyy"))
-
-
             Text(
                 text = formattedDate,
                 color = Color.Blue,
@@ -86,10 +88,10 @@ fun NoteItem(notes: NoteModel,
             Text(text = notes.title, fontWeight = FontWeight.Black)
             Text(text = notes.newNote)
 
-            val timestamp = Instant.ofEpochMilli(notes.noteTime)
-            val noteTime = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault())
-
-            val formattedTime = noteTime.format(DateTimeFormatter.ofPattern("hh:mm a"))
+            // Conditionally display "Edited" text
+//            if (notes.editTag == "edited") {
+//                Text(text = "Edited", fontWeight = FontWeight.Thin, color = Color.Gray)
+//            }
 
             Text(
                 text = formattedTime,
