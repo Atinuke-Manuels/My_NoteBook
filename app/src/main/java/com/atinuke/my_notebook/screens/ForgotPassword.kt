@@ -1,7 +1,6 @@
 package com.atinuke.my_notebook.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,25 +13,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -51,19 +43,22 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import com.atinuke.my_notebook.R
 import com.atinuke.my_notebook.Routes
 import com.atinuke.my_notebook.view_model.AuthViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.auth.oAuthProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
+fun ForgotPassword(authViewModel: AuthViewModel, navController: NavController) {
     var emailAddress by rememberSaveable { mutableStateOf("") }
-    var passwordInputText by rememberSaveable { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false) }
-//    val authViewModel : AuthViewModel = viewModel()
+    val context = LocalContext.current
+
 
     Box (
         modifier = Modifier
@@ -74,21 +69,21 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
             contentDescription = "Note App background",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
-            )
+        )
         Column(
             modifier = Modifier
                 .padding(12.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Welcome back!!!",
+            Text(text = "Forgot Password",
                 modifier = Modifier
                     .padding(bottom = 4.dp),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Text(text = "Enter username & password",
+            Text(text = "Enter email address",
                 modifier = Modifier,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
@@ -114,87 +109,38 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                     .border(1.dp, Color.Gray, MaterialTheme.shapes.small),
                 leadingIcon = { Icon(Icons.Filled.Email, contentDescription = null, tint = Color.Gray.copy(alpha = 0.7f)) },
             )
-            OutlinedTextField(
-                value = passwordInputText,
-                onValueChange = { titleInput -> passwordInputText = titleInput },
-                placeholder = { Text(text = "Enter Password", fontWeight = FontWeight.Light, color = Color.Gray) },
-                visualTransformation = if (passwordVisibility) {
-                    VisualTransformation.None // Show plain text
-                } else {
-                    PasswordVisualTransformation() // Mask the password
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .border(1.dp, Color.Gray, MaterialTheme.shapes.small),
-                leadingIcon = { Icon(Icons.Default.Lock,
-                    contentDescription = null,
-                    tint = Color.Gray.copy(alpha = 0.7f))},
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(
-                            imageVector = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = if (passwordVisibility) "Hide Password" else "Show Password",
-                            tint = Color.Gray.copy(alpha = 0.7f)
-                        )
-                    }
-                },
-            )
-            ClickableText(
-                text = AnnotatedString("Forgot Password"),
-                onClick = {
-                    navController.navigate(Routes.forgotPasswordRoute)
-                },
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 8.dp, end = 8.dp, bottom = 16.dp),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 16.sp,
-                    color = Color.Blue,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Bold
-                )
-            )
+
             Button(
                 onClick = {
 //                    navController.navigate(Routes.noteListRoute)
-                    authViewModel.loginUser(
-                        email = emailAddress,
-                        password = passwordInputText,
-                    )},
+
+                        authViewModel.forgotPassword(
+                            email = emailAddress,
+                            context = context
+                        )
+                          },
                 modifier = Modifier
-                    .size(140.dp, 76.dp)
+                    .size(240.dp, 76.dp)
                     .padding(12.dp),
-                enabled = if (emailAddress == "" || passwordInputText == "") false else true
+                enabled = if (emailAddress == "") false else true
 
             ) {
                 Text(
-                    text = "Login",
-                    color = if (emailAddress == "" || passwordInputText == "") Color.DarkGray else Color.White,
+                    text = "Reset Password",
+                    color = if (emailAddress == "") Color.DarkGray else Color.White,
                     fontSize = 20.sp,
                     fontFamily = FontFamily.Cursive,
                     fontWeight = FontWeight.Bold
                 ) // Set label text and color
             }
 
-            Text(text = "---- or ----",
-                fontWeight = FontWeight.Medium,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .padding(start = 8.dp, bottom = 4.dp)
-            )
             Row(modifier = Modifier
                 .padding(bottom = 12.dp),
                 horizontalArrangement = Arrangement.Center
 
             )
             {
-                Image(painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google Icon" ,
-                    modifier = Modifier
-                        .size(32.dp)
-                )
-                Text(text = "Login with Google.?",
+                Text(text = "Just remembered your password?",
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -202,9 +148,9 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 )
             }
             ClickableText(
-                text = AnnotatedString("Create an account"),
+                text = AnnotatedString("Login"),
                 onClick = {
-                    navController.navigate(Routes.signupRoute)
+                    navController.navigate(Routes.loginRoute)
                 },
                 modifier = Modifier
 //                    .align(Alignment.Start)
@@ -212,11 +158,11 @@ fun LoginScreen(navController: NavController, authViewModel: AuthViewModel) {
                 ,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 20.sp,
-                    color = Color.DarkGray,
+                    color = Color.Blue,
                     fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
             )
         }
     }
-    }
+}

@@ -3,6 +3,10 @@ package com.atinuke.my_notebook.screens
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,8 +44,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -71,8 +81,11 @@ fun NoteListScreen(navController: NavController, authViewModel: AuthViewModel) {
     val notesFromDB by myNoteViewModel.getAllNotes().observeAsState(emptyList())
     var selectedNote by remember { mutableStateOf<NoteModel?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showLogOutDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
 
 
     Scaffold(
@@ -205,13 +218,15 @@ fun NoteListScreen(navController: NavController, authViewModel: AuthViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(Routes.addNoteRoute) },
+                onClick = { showDialog = true },
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add note",
                     )
             }
         }
     )
+
+
     if (showDeleteDialog) {
         DeleteConfirmationDialog(
             onConfirm = {
@@ -224,6 +239,72 @@ fun NoteListScreen(navController: NavController, authViewModel: AuthViewModel) {
             onDismiss = {
                 selectedNote = null
                 showDeleteDialog = false
+            }
+        )
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+            },
+            title = { Text(text = "Choose an Option",
+                fontFamily = FontFamily.Cursive,
+                fontWeight = FontWeight.Bold
+            ) },
+            text = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(
+                        onClick = {
+                            navController.navigate(Routes.addNoteRoute)
+                            showDialog = false
+                        },
+                        modifier = Modifier
+                            .background(Color.Green, shape = MaterialTheme.shapes.small)
+//                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Note,
+                            contentDescription = "add note",
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "add note", color = Color.White, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
+                    }
+                    TextButton(
+                        onClick = {
+                            showLogOutDialog = true
+                            showDialog = false
+                        },
+                        modifier = Modifier
+                            .background(Color.Red, shape = MaterialTheme.shapes.small)
+//                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Logout,
+                            contentDescription = "LogOut",
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "LogOut", color = Color.White, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {}
+        )
+    }
+
+    if (showLogOutDialog) {
+        LogoutConfirmationDialog(
+            authViewModel = authViewModel,
+            onDismiss = {
+                showLogOutDialog = false
             }
         )
     }
@@ -251,6 +332,36 @@ fun DeleteConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
         }
     )
 }
+
+
+@Composable
+fun LogoutConfirmationDialog(authViewModel: AuthViewModel, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Log Out",
+            fontFamily = FontFamily.Cursive,
+            fontWeight = FontWeight.Bold
+        ) },
+        text = { Text(text = "Are you sure you want to LogOut?", fontFamily = FontFamily.Cursive, fontSize = 20.sp) },
+        confirmButton = {
+            TextButton(onClick = {authViewModel.logout()}) {
+                Text(text = "Yes", fontFamily = FontFamily.Cursive, fontSize = 20.sp)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = "No",fontFamily = FontFamily.Cursive, fontSize = 20.sp)
+            }
+        }
+    )
+}
+
+
+
+
+
+
+
 
 
 //@RequiresApi(Build.VERSION_CODES.O)
