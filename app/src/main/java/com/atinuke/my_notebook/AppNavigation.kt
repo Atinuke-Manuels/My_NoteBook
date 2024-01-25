@@ -6,7 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,24 +18,31 @@ import com.atinuke.my_notebook.screens.AddNoteScreen
 import com.atinuke.my_notebook.screens.LoginScreen
 import com.atinuke.my_notebook.screens.NoteDetailsScreen
 import com.atinuke.my_notebook.screens.NoteListScreen
+import com.atinuke.my_notebook.screens.SignUpScreen
+import com.atinuke.my_notebook.view_model.AuthViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppNavigation(){
+fun AppNavigation(authViewModel: AuthViewModel){
     val navController = rememberNavController()
+    var isUserSignIn by rememberSaveable { authViewModel.isUserAuthenticated}
 
     NavHost(
         navController = navController,
-        startDestination = Routes.loginRoute
+        // to check if a user is signed in or not
+        startDestination = if(isUserSignIn){"note-list"} else { "login"}
     ){
         composable(Routes.loginRoute){
-            LoginScreen(navController)
+            LoginScreen(navController, authViewModel)
+        }
+        composable(Routes.signupRoute){
+            SignUpScreen(navController, authViewModel)
         }
         composable(Routes.noteListRoute){
-            NoteListScreen(navController)
+            NoteListScreen(navController, authViewModel)
         }
         composable(Routes.addNoteRoute){
-            AddNoteScreen(navController)
+            AddNoteScreen(navController, authViewModel)
         }
 
         composable("note-details/{noteId}"){
@@ -54,4 +64,5 @@ object Routes {
     }
 
     var loginRoute = "login"
+    var signupRoute= "signup"
 }

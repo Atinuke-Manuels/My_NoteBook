@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -53,8 +54,12 @@ android {
 dependencies {
 
     implementation("androidx.room:room-common:2.6.1")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.firebase:firebase-analytics:21.5.0")
+
     val lifecycle_version = "2.6.2"
 
+    implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     // ViewModel utilities for Compose

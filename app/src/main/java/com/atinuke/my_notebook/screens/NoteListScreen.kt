@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -40,6 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,13 +58,14 @@ import com.atinuke.my_notebook.R
 import com.atinuke.my_notebook.Routes
 import com.atinuke.my_notebook.components.NoteItem
 import com.atinuke.my_notebook.models.NoteModel
+import com.atinuke.my_notebook.view_model.AuthViewModel
 import com.atinuke.my_notebook.view_model.NoteViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteListScreen(navController: NavController) {
+fun NoteListScreen(navController: NavController, authViewModel: AuthViewModel) {
 
     val myNoteViewModel: NoteViewModel = viewModel()
     val notesFromDB by myNoteViewModel.getAllNotes().observeAsState(emptyList())
@@ -74,7 +78,10 @@ fun NoteListScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "My Notes") },
+                title = { Text(text = "Dear Diary",
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold
+                    ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
@@ -85,10 +92,18 @@ fun NoteListScreen(navController: NavController) {
                         // Toggle the search state
                         isSearchActive = !isSearchActive
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search for Note "
-                        )
+                        // To toggle search and close
+                        if(isSearchActive){
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Search for Note "
+                            )
+                        }else {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search for Note "
+                            )
+                        }
                     }
                     if (isSearchActive) {
                         TextField(
@@ -116,16 +131,17 @@ fun NoteListScreen(navController: NavController) {
                             },
                             modifier = Modifier
                                 .height(48.dp) // Adjust the height as needed
-                                .width(136.dp)  // Adjust the width as needed
+                                .width(240.dp)  // Adjust the width as needed
+                                .padding(end = 4.dp)
                         )
                     }
 
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More Options"
-                        )
-                    }
+//                    IconButton(onClick = {}) {
+//                        Icon(
+//                            imageVector = Icons.Default.MoreVert,
+//                            contentDescription = "More Options"
+//                        )
+//                    }
                 }
             )
         },
@@ -218,26 +234,29 @@ fun NoteListScreen(navController: NavController) {
 fun DeleteConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Delete Note") },
-        text = { Text(text = "Are you sure you want to delete this note?") },
+        title = { Text(text = "Delete Note",
+            fontFamily = FontFamily.Cursive,
+            fontWeight = FontWeight.Bold
+            ) },
+        text = { Text(text = "Are you sure you want to delete this note?", fontFamily = FontFamily.Cursive, fontSize = 20.sp) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(text = "Yes")
+                Text(text = "Yes", fontFamily = FontFamily.Cursive, fontSize = 20.sp)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = "No")
+                Text(text = "No",fontFamily = FontFamily.Cursive, fontSize = 20.sp)
             }
         }
     )
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun NoteListScreenPreview() {
-    val navController = rememberNavController()
-    AppNavigation()
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview
+//@Composable
+//fun NoteListScreenPreview() {
+//    val navController = rememberNavController()
+//    AppNavigation(authViewModel: AuthViewModel)
+//}

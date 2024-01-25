@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,16 +79,15 @@ fun NoteItem(notes: NoteModel,
             .clickable {
                 showDialog = true
             }
-            // To give the cards alternate colors
-
     )
     {
 
         Box (
             modifier = Modifier
                 .fillMaxSize()
+                // To give the cards alternate colors
                 .background(
-                    color = if (notes.id.toInt() % 2 == 0) Color.LightGray else Color.Gray,
+                    color = if (notes.id.toInt() % 2 == 0) Color(0xFF03DAC5)else Color(0xFFFF9800),
                     shape = RectangleShape
                 )// Set background color
 
@@ -133,6 +133,7 @@ fun NoteItem(notes: NoteModel,
                 )
             }
         }
+
     }
 
     if (showDialog) {
@@ -140,7 +141,10 @@ fun NoteItem(notes: NoteModel,
             onDismissRequest = {
                 showDialog = false
             },
-            title = { Text(text = "Choose an Option") },
+            title = { Text(text = "Choose an Option",
+                fontFamily = FontFamily.Cursive,
+                fontWeight = FontWeight.Bold
+                ) },
             text = {
                 Row(
                     modifier = Modifier
@@ -163,7 +167,7 @@ fun NoteItem(notes: NoteModel,
                             tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "Edit", color = Color.White)
+                        Text(text = "Edit", color = Color.White, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
                     }
                     TextButton(
                         onClick = {
@@ -180,7 +184,7 @@ fun NoteItem(notes: NoteModel,
                             tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = "Delete", color = Color.White)
+                        Text(text = "Delete", color = Color.White, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
                     }
                 }
             },

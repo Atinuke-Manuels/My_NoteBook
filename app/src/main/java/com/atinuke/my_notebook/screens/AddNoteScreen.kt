@@ -27,16 +27,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.atinuke.my_notebook.Routes
+import com.atinuke.my_notebook.view_model.AuthViewModel
 import com.atinuke.my_notebook.view_model.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNoteScreen(navController : NavController){
+fun AddNoteScreen(navController : NavController, authViewModel: AuthViewModel){
     var noteViewModel: NoteViewModel = viewModel()
 
     var title by rememberSaveable { mutableStateOf("")}
@@ -47,7 +49,10 @@ fun AddNoteScreen(navController : NavController){
    Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Add New Note") },
+                title = { Text(text = "Add New Note",
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold
+                    ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
@@ -89,7 +94,7 @@ fun AddNoteScreen(navController : NavController){
                        .padding(horizontal = 10.dp)
                        .padding(top = 10.dp)
                        .fillMaxWidth()
-                       .height(60.dp),
+                       .height(68.dp),
                    maxLines = 1, // Adjust as needed
                )
                Spacer(modifier = Modifier.height(0.dp))

@@ -14,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -21,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.atinuke.my_notebook.Routes
 import com.atinuke.my_notebook.models.NoteModel
+import com.atinuke.my_notebook.view_model.AuthViewModel
 import com.atinuke.my_notebook.view_model.NoteViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +41,10 @@ fun NoteDetailsScreen(navController: NavController, noteId: String) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Edit Note") },
+                title = { Text(text = "Edit Note",
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold
+                    ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White,
